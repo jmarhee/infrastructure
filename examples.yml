@@ -1,0 +1,36 @@
+---
+# - hosts:
+#     - all
+#   become: true
+#   roles:
+#   # Roles to ensure a non-root user is given NOPASSWD:ALL sudoer status, and create a non-root Docker user
+#           - { role: sudoers, nonroot_super_user: ""}
+#           - { role: docker, docker_user: "" }
+
+# - hosts:
+#     - wireguards
+#   become: true
+#   roles:
+#          - { role: wireguard, client_pubkey: "", network_iface: "ens3"}
+
+# - hosts:
+#     - swarm_leaders
+#   become: true
+#   roles:
+#   # Role to create a certificate and nginx server block for a proxied-endpoint
+#           - { role: cert-service, common_name: "", backend_addr: "" }
+
+# - hosts:
+#     - dns_servers
+#   become: true
+#   roles:
+#   # Role to create dnsmasq-based DNS server and creates DNS zones for the `records` dictionary below
+#           - { role: dns }
+#   vars:
+#     records:
+#       git.krebstar.internal: 
+#         hostname: "git.krebstar.internal"
+#         address: ""
+#       docs.krebstar.internal: 
+#         hostname: "docs.krebstar.internal"
+#         address: ""
