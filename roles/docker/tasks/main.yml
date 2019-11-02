@@ -1,0 +1,11 @@
+---
+- name: Install docker
+  apt:
+    name: docker.io
+    state: present
+    update_cache: yes
+- name: Adding user {{ docker_user }} to docker group  
+  user: 
+    name: "{{ docker_user }}"
+    groups: "docker"
+    append: "yes"

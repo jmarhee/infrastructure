@@ -1,0 +1,22 @@
+---
+- name: Install dnsmasq package
+  apt:
+    name: dnsmasq
+    state: present
+    update_cache: yes
+
+- name: Updates listen-address in dnsmasq.conf
+  lineinfile:
+    dest: /etc/dnsmasq.conf
+    line: "listen-address={{ ansible_host }}"
+    state: present
+
+- name: Creates records for {{ item.value.hostname }} ({{ item.value.address }})
+  template:
+    src: dnsmasq_conf.j2
+    dest: /etc/dnsmasq.d/{{ item.value.hostname }}.conf
+  vars:
+    hostname: "{{ item.value.hostname }}"
+    address: "{{ item.value.address }}"
+  with_dict: "{{ records }}"
+  notify: Restart dnsmasq

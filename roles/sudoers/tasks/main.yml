@@ -1,0 +1,10 @@
+---
+- name: Adding user {{ nonroot_super_user }}  
+  user: 
+    name: "{{ nonroot_super_user }}"
+    groups: "sudo"
+    append: "yes"
+- name: Copy default /etc/sudoers
+  copy:
+    src: sudoers
+    dest: /etc/sudoers
