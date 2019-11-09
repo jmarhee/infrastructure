@@ -11,12 +11,13 @@
     line: "listen-address={{ ansible_host }}"
     state: present
 
-- name: Creates records for {{ item.value.hostname }} ({{ item.value.address }})
+- name: Creates DNS config in /etc/dnsmasq.d
   template:
     src: dnsmasq_conf.j2
     dest: /etc/dnsmasq.d/{{ item.value.hostname }}.conf
   vars:
     hostname: "{{ item.value.hostname }}"
     address: "{{ item.value.address }}"
+    description: "{{ item.value.description }}"
   with_dict: "{{ records }}"
   notify: Restart dnsmasq
