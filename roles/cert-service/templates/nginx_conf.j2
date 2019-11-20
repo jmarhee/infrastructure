@@ -1,5 +1,4 @@
 server {
-        listen 80;
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
         server_name {{ common_name }};
@@ -17,4 +16,11 @@ server {
 	        port_in_redirect off;
 	        proxy_connect_timeout 300;
 	}
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+	server_name {{ common_name }};
+	return 301 https://$host$request_uri;
 }
