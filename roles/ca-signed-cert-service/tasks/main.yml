@@ -1,0 +1,63 @@
+---
+- name: Creates directory for Certificate Signing Requests, Keys, and Certfiles
+  file:
+    path: "/etc/ssl/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+    recurse: yes
+  with_items:
+    - csr
+    - private
+    - cert
+    - certs
+
+- name: Install CA
+  file:
+    src: "{{ ca_cert_name }}.pem"
+    dest: "/etc/ssl/certs/{{ ca_cert_name }}.pem"
+  notify: Update ca-certificates
+
+- name: Generate an OpenSSL private key for {{ common_name }}
+  openssl_privatekey:
+    path: /etc/ssl/private/{{ common_name }}.pem
+
+- name: Generate a Certificate Signing Request for {{common_name}}
+  openssl_csr:
+    path: /etc/ssl/csr/{{ common_name }}.csr
+    privatekey_path: /etc/ssl/private/{{ common_name }}.pem
+    common_name: "{{ common_name }}"
+
+# - name: Generate a Self Signed OpenSSL certificate for {{ common_name }}
+#   openssl_certificate:
+#     path: /etc/ssl/cert/{{ common_name }}.crt
+#     privatekey_path: /etc/ssl/private/{{ common_name }}.pem
+#     csr_path: /etc/ssl/csr/{{ common_name }}.csr
+#     provider: selfsigned
+
+- name: Generate an OpenSSL certificate signed with your own CA certificate
+  openssl_certificate:
+    path: /etc/ssl/cert/{{ common_name }}.crt
+    csr_path: /etc/ssl/csr/{{ common_name }}.csr
+    ownca_path: "/etc/ssl/certs/{{ ca_cert_name }}.pem"
+    ownca_privatekey_path: "{{ca_key_path}}"
+    provider: ownca
+
+- name: Install nginx Package
+  apt:
+    update_cache: yes
+    name: nginx
+    state: present
+  notify: Start nginx
+
+- name: Nginx Configuration
+  file:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+
+- name: Nginx Config for {{ common_name }}
+  template: 
+    src: nginx_conf.j2 
+    dest: "/etc/nginx/sites-enabled/{{ common_name }}.conf"
+  notify: Reload nginx
