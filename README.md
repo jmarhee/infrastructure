@@ -58,7 +58,7 @@ The `dns` role caches by configuration your DNS entries for an internal resolver
 
 where `hostname`, `address`, and `description` are required values. `description` is added as a comment to the config file placed at `/etc/dnsmasq.d/{{ hostname }}.conf`
 
-### Cert Service
+### Self-Signed Cert Service
 
 The `cert-service` role generates an Nginx server block, and a certificate, for services being proxied to. You will only need to define a `common_name` and `backend_addr`:
 
@@ -70,3 +70,17 @@ The `cert-service` role generates an Nginx server block, and a certificate, for 
            - { role: cert-service, common_name: "data.east.krebstar.internal", backend_addr: "http://192.168.122.120:8888" }
 ```
 
+### CA-Signed Cert Service
+
+The `ca-signed-cert-service` role uses a predefined CA keypair to sign a certificate. Like the `cert-service` role, a `common_name` and `backend_addr` is required, but also a `ca_cert_name` and `ca_key_path`:
+
+```yaml
+ - hosts:
+      - drone_ci
+   become: true
+   vars:
+    ca_cert_name: "rootCA"
+    ca_key_path: "/etc/ssl/private/rootCA.key"
+   roles:
+          - { role: ca-signed-cert-service, common_name: "drone.krebstar.internal", backend_addr: "http://127.0.0.1:80" }
+```

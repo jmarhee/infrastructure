@@ -2,3 +2,6 @@ demo/
 main.yml
 main.retry
 hosts
+roles/ca-signed-cert-service/files/*.pem
+roles/ca-signed-cert-service/files/*.crt
+roles/ca-signed-cert-service/files/*.key
