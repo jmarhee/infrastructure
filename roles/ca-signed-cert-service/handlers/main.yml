@@ -11,3 +11,6 @@
 
 - name: Kill pid
   shell: 'kill -HUP $(cat /var/run/nginx.pid)'
+
+- name: Update ca-certificates
+  shell: update-ca-certificates

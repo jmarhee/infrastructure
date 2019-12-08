@@ -22,6 +22,7 @@
 - name: Generate an OpenSSL private key for {{ common_name }}
   openssl_privatekey:
     path: /etc/ssl/private/{{ common_name }}.pem
+    size: 1024
 
 - name: Generate a Certificate Signing Request for {{common_name}}
   openssl_csr:
