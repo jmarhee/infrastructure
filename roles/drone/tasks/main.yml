@@ -1,0 +1,22 @@
+---
+- name: Generate DRONE_RPC_SECRET
+  shell: openssl rand -hex 16
+  register: drone_rpc_secret 
+
+# Used with the cert-service or ca-signed-cert-service role, so will use http
+- name: Drone Container
+  docker_container:
+    name: drone
+    image: drone/drone:1
+    ports:
+     - "127.0.0.1:8080:80"
+    env:
+      DRONE_AGENTS_ENABLED: "true"
+      DRONE_GITLAB_SERVER: "{{ drone_gitlab_server }}"
+      DRONE_GITLAB_CLIENT_ID: "{{ drone_gitlab_client_id }}"
+      DRONE_GITLAB_CLIENT_SECRET: "{{ drone_gitlab_client_secret }}"
+      DRONE_RPC_SECRET: "{{ drone_rpc_secret }}"
+      DRONE_SERVER_HOST: "{{ drone_server_hostname }}"
+      DRONE_SERVER_PROTO: "http"
+    volumes:
+      - /var/lib/drone:/data
