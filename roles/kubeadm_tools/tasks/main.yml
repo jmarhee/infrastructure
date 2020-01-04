@@ -1,0 +1,18 @@
+---
+- name: Add an Apt signing key for Kubeadm
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubeadm Apt repo
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Install Kubeadm Packages
+  apt:
+    pkg:
+    - kubelet
+    - kubeadm
+    - kubectl
+    update_cache: yes
