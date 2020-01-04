@@ -1,15 +1,15 @@
 ---
-- name: Install dnsmasq package
-  apt:
-    name: dnsmasq
-    state: present
-    update_cache: yes
+#- name: Install dnsmasq package
+#  apt:
+#    name: dnsmasq
+#    state: present
+#    update_cache: yes
 
-- name: Updates listen-address in dnsmasq.conf
-  lineinfile:
-    dest: /etc/dnsmasq.conf
-    line: "listen-address={{ ansible_host }}"
-    state: present
+#- name: Updates listen-address in dnsmasq.conf
+#  lineinfile:
+#    dest: /etc/dnsmasq.conf
+#    line: "listen-address={{ ansible_host }}"
+#    state: present
 
 - name: Creates DNS config in /etc/dnsmasq.d
   template:
