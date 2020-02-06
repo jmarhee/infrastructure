@@ -1,9 +1,15 @@
 ---
-- name: Install docker
+- name: Install docker and pip
   apt:
-    name: docker.io
+    name: "{{ item }}"
     state: present
     update_cache: yes
+  with_items:
+    - docker.io
+    - python-pip
+- name: pip install docker
+  pip:
+    name: docker
 - name: Adding user {{ docker_user }} to docker group  
   user: 
     name: "{{ docker_user }}"
