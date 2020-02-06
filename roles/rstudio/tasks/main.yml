@@ -1,0 +1,23 @@
+---
+#- name: Generate PASSWORD
+#  command: openssl rand -hex 16
+#  register: rstudio_password
+- name: Generate Rstudio password
+  shell: openssl rand -hex 16
+  run_once: true
+  delegate_to: 127.0.0.1
+  register: rstudio_password
+
+- name: Deploy rstudio
+  docker_container:
+    name: rstudio
+    image: rocker/verse
+    ports:
+     - "127.0.0.1:8787:8787"
+    env:
+      USERNAME: "rstudio"
+      PASSWORD: "{{ rstudio_password.stdout|quote }}"
+  notify: Reload nginx
+
+
+- debug: msg="Rstudio password {{ rstudio_password.stdout }}"
