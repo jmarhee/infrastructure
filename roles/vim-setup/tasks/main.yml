@@ -1,0 +1,41 @@
+- name: "Creating {{ item }} directory"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items: 
+    - "{{ home }}/.vim"
+    - "{{ home }}/.vim/bundle"
+    - "{{ home }}/.vim/autoload"
+
+- name: Create .vimrc
+  command: "touch {{ home }}/.vimrc"
+
+- name: Download pathogen
+  get_url:
+    url: "https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim"
+    dest: "{{ home }}/.vim/autoload/pathogen.vim"
+
+- name: Clone syntastic
+  git:
+    repo: https://github.com/vim-syntastic/syntastic.git
+    dest: "{{ home }}/.vim/bundle/syntastic"
+
+- name: Clone swift.vim
+  git:
+    repo: https://github.com/keith/swift.vim
+    dest: "{{ home }}/.vim/bundle/swift.vim"
+
+- name: Install swiftlint
+  homebrew:
+    name: swiftlint
+    state: present
+
+- name: Base vimrc
+  lineinfile:
+    path: "{{ home }}/.vimrc"
+    line: "{{ item }}"
+  with_items:
+    - "execute pathogen#infect()"
+    - "syntax on"
+    - "filetype plugin indent on"
+    - "let g:syntastic_swift_swiftlint_use_defaults = 1"
